@@ -1,0 +1,81 @@
+<form [formGroup]="form" (ngSubmit)="onSave()" class="m-4">
+  <div class="text-center mb-2">
+    <mat-card-title>{{ title }}</mat-card-title>
+    <mat-divider></mat-divider>
+  </div>
+
+  <mat-card-content>
+
+    <div class="row">
+      <mat-form-field class="col">
+        <mat-label>Descripcion</mat-label>
+        <input 
+          matInput
+          type="text" 
+          required
+          formControlName="description"
+        >
+        <mat-error *ngIf="isInvalidField('description')" >
+          <strong>{{ getFieldError('description') }}</strong>
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field  class="col">
+        <mat-label>Precio</mat-label>
+        <input 
+          matInput
+          type="text" 
+          required
+          formControlName="price"
+        >
+
+        <mat-error *ngIf="isInvalidField( 'price')">
+          <strong>{{ getFieldError('price') }}</strong>
+          <strong *ngIf="form.get('price')?.hasError('pattern')">Se aceptan solo numeros (hasta con 2 decimales).</strong>
+        </mat-error>
+      </mat-form-field> 
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="isInvalidField('category')">
+          <strong>Seleccione una categoria</strong> 
+        </mat-error>
+      </mat-form-field>
+      <mat-checkbox formControlName="available" [checked]="currentProduct.available">Disponible</mat-checkbox>
+    </div>
+
+    <div>
+      <label for="image">Seleccione una imagen(JPG o PNG)</label>
+      <input 
+        id="image"
+        type="file" 
+        class="form-control" 
+        (change)="onFileSelected($event)" 
+        accept="image/jpeg, image/jpg, image/png"
+      >
+    </div>
+
+    <div class="text-center">
+      <img 
+        style="height: 100px; width: 100px; margin: 10px;" 
+        [src]="alt_img? alt_img : currentProduct.img |urlImage"
+      >
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions class="d-flex justify-content-center">
+    <div class="m-2">
+      <button mat-button (click)="onSave()" style="background-color: green; color: white;">Guardar</button>
+    </div>
+
+    <div class="m-2">
+      <button mat-button (click)="onCancel()">Cancelar</button>
+    </div>
+  </mat-card-actions>
+</form>

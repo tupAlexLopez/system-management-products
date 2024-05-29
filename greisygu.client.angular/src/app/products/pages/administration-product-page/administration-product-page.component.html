@@ -1,0 +1,109 @@
+<div class="container p-2 text-center">
+    <span *ngIf="datasourceSize === 0; else dashboard">
+        <h1>No se encontraron registros de productos.</h1>
+        <div class="text-center m-2">
+            <div class="mb-2">
+                <button
+                    mat-button class="text-light bg-primary"
+                    (click)="openAdminCategoryDialog()">
+                    Administrar categorias
+                </button>
+            </div>
+            <div>
+                <button 
+                    mat-button class="text-light bg-success"
+                    (click)="onSaveDialog()">
+                    Agregar nuevo producto
+                </button>
+            </div>
+        </div>
+    </span>
+    <ng-template #dashboard>
+        <h1>Administracion de productos</h1>
+        <hr>
+        <product-search (eventSearchValue)="onSearchValue( $event )"/>
+        
+        <div class="row align-items-end">
+            <div class="col text-start">
+                <div class="mb-2">
+                    <button
+                        mat-button class="text-light bg-primary"
+                        (click)="openAdminCategoryDialog()">
+                        Administrar categorias
+                    </button>
+                </div>
+                <div>
+                    <button
+                        mat-button class="text-light bg-success"
+                        (click)="onSaveDialog()">
+                        + Agregar nuevo producto
+                    </button>
+                </div>
+            </div>
+            <div class="col text-end">
+                <span><strong>Filtrar por</strong> </span>
+                <product-filter-category (eventCategory)="onSelectCategory(  $event )" class="m-2"/>
+                <product-filter-available (eventAvailable)="onSelectAvailable( $event )" />
+            </div>
+        </div>
+        
+        <table class="table table-striped" *ngIf="datasource.length > 0; else noDatasource">    
+            <thead>
+                <tr>
+                    <th 
+                        *ngFor="let col of datasourceColumns" 
+                        scope="col">
+                        {{ col }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of datasource"
+                scope="row">
+                    <td style="width: 100px; "><img [src]="product.img |urlImage" [alt]="product.description +'image'" style="height: 80px;"></td>
+                    <td>{{ product.id }}</td>
+                    <td style="width: 25rem;">{{ product.description }}</td>
+                    <td>$ {{ product.price }}</td>
+                    <td><mat-icon>{{ product.available |stringBoolean}}</mat-icon></td>
+                    <td>{{ product.category.name |uppercase}}</td>
+                    <td>
+                        <button class="m-2" style="background-color: orange;" mat-button (click)="onUpdateDialog( product )"><i><mat-icon>edit</mat-icon></i></button>
+                        <button class="m-2" style="background-color: yellow;" mat-button (click)="openConfirmDialog( 'disable', product )"><i><mat-icon>block</mat-icon></i></button>
+                        <button class="m-2" style="background-color: red;" mat-button (click)="openConfirmDialog( 'delete', product )"><i><mat-icon>delete</mat-icon></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <ng-template #noDatasource>
+            <div class="text-center m-2"></div>
+            <h3 class="alert alert-danger"><strong>No se encontraron coincidencias.</strong></h3>
+        </ng-template>
+
+        <nav *ngIf="(dataPage!.totalPages) > 1" class="d-flex justify-content-center">
+            <ul class="pagination pagination-sm">
+                <li class="page-item pointer" [ngClass]="{ 'disabled': dataPage?.isFirst }">
+                    <a class="page-link" (click)="onNavigate( (dataPage!.pageNumber - 2) )" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <li 
+                    *ngFor="let page of pages"
+                    class="page-item pointer"
+                    [ngClass]="{'active': (dataPage!.pageNumber) === page}"
+                    (click)="onNavigate( (page - 1) )"
+                >
+                    <a class="page-link">{{ page }}</a>
+                </li>
+
+                <li class="page-item pointer" [ngClass]="{ 'disabled': dataPage?.isLast }">
+                <a class="page-link" (click)="onNavigate( dataPage!.pageNumber )" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+        
+    </ng-template>
+</div>
+   

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{ dataDialog.title }}</h1>
+
+<div *ngIf="dataDialog.description" mat-dialog-content class="text-center">
+  <p>{{ dataDialog.description }}</p>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No</button>
+  <span class="spacer"></span>
+  <button mat-button color="warn" (click)="onClickConfirm()" cdkFocusInitial>Si, estoy de acuerdo</button>
+</div>
